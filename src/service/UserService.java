@@ -58,26 +58,27 @@ public class UserService {
     public boolean checkEmail(String email, ArrayList<User> users){
         boolean isError =false;
         String regex = "^(.+)@(.+)$";
-             if(email.matches(regex)){
-                for (User userValue : users){
-                    if (userValue.getEmail().equals(email)){
-                        isError = true;
-                        System.out.println("Email này đã được sử dụng!");
-                        break;
-                    }
+         if(email.matches(regex)){
+            for (User userValue : users){
+                if (userValue.getEmail().equals(email)){
+                    isError = true;
+                    System.out.println("Email này đã được sử dụng!");
+                    break;
                 }
-             }else{
-                 System.out.println("Email sai định dạng !");
-                 isError = true;
-             }
+            }
+         }else{
+             System.out.println("Email sai định dạng !");
+             isError = true;
+         }
         return isError;
     }
 
     public boolean checkPassword(String password){
         String regex = "^(?=.*[A-Z])(?=.*[.,-_;])[A-Za-z.,-_;]{7,15}$";
-        boolean isError = !password.matches(regex);
-        if(isError) {
+        boolean isError = false;
+        if(!password.matches(regex)) {
             System.out.println("Mật khẩu sai định dạng");
+            isError=true;
         }
         return isError;
     }
@@ -150,6 +151,7 @@ public class UserService {
     }
     public boolean subMenu(Scanner scanner,ArrayList<User> users, User user, UserService userService){
         int select = 0;
+        boolean isContinue = true;
         do {
             System.out.println("Chào mừng "+user.getUsername()+", bạn có thể thực hiện các công việc sau:");
             System.out.println("1 - Thay đổi username");
@@ -161,7 +163,8 @@ public class UserService {
             select=Integer.parseInt(scanner.nextLine());
             switch (select){
                 case 0:
-                    return false;
+                    isContinue=false;
+                    return isContinue;
                 case 1:
                     updateUsername(scanner,users,user);
                     break;
@@ -176,7 +179,7 @@ public class UserService {
                     break;
             }
         }while (select!=0);
-       return true;
+       return isContinue;
     }
     public void updateUsername(Scanner scanner,ArrayList<User> users, User user){
         System.out.println("Mời bạn nhập username mới:");
@@ -194,7 +197,6 @@ public class UserService {
             user.setEmail(email);
         }
     }
-
     public void updatePassword(Scanner scanner, User user){
         System.out.println("Mời bạn nhập password mới:");
         String password= scanner.nextLine();
@@ -203,7 +205,6 @@ public class UserService {
             user.setPassword(password);
         }
     }
-
     public void logOut(Scanner scanner, ArrayList<User> users, UserService userService){
         Menu menu=new Menu();
         menu.optionMenu(scanner,users,userService);
